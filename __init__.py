@@ -1,0 +1,1 @@
+from insurance_churn.ml_pipeline.artifacts.pipeline_loggers import data_logger, ml_logger
