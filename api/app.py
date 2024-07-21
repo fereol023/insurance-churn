@@ -8,7 +8,7 @@ from api.PredictController import ChurnC
 
 app = FastAPI(
     title="insurance churn-API",
-    description="poue exposer le modèle de ML",
+    description="pour exposer le modèle de ML",
     version="POC",
 )
 
@@ -33,7 +33,9 @@ async def call(data: ClientDataM):
     Nouveau prédict utilisateur.
     --------------------------------------
     """
-    res = ChurnC().predict(data)
+    c = ChurnC()
+    c.predict(data)
+    res = c.get_output()
     if res=="":
         raise HTTPException(status_code=500, detail="E.")
     return {"predict": res}

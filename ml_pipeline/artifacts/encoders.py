@@ -1,6 +1,6 @@
 import pandas as pd
-#from ml_pipeline.artifacts import *
-from artifacts import *
+from ml_pipeline.artifacts import *
+#from artifacts import *
 from joblib import load, dump
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import LabelEncoder, StandardScaler, OneHotEncoder

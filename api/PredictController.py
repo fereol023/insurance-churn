@@ -10,10 +10,10 @@ class ChurnC:
     CHURN_MODEL_PATH = 'ml_pipeline/models_registry/mlserver/'
 
     def __init__(self) -> None:
-        self.model = self.load_model(ChurnC.CHURN_MODEL_PATH + '1720038122.joblib')
+        self.model = self.load_model(ChurnC.CHURN_MODEL_PATH + '1721516304.joblib')
         self.model_pipeline = SKLPipeline().build_pipeline(model=self.model)
         self.pprocess_pipeline = SKLPipeline().build_pipeline(model=None)
-
+        self.output = None
         logging.info("Model and pipeline loaded correctly !")
 
     def load_model(self, path):
@@ -43,6 +43,10 @@ class ChurnC:
     def predict(self, client: ClientDataM):
         """TODO"""
         
+        # le model def avec le bon ordre des X
+        new_data_model = {k:0 for k in self.get_features_names(self.model_pipeline)}
+
+        # un dict temp pour recup la data et la passer au preproc
         new_data = {
              "policy_duration_v1": "",
              "inception_date_year_v1": "",
@@ -56,8 +60,9 @@ class ChurnC:
              "total_claims_value_v1": "",
              "total_claims_number": "",
              "number_of_complaints": ""
-        } # order des X > peut import si on le passe par le pipeline de feature eng
+        } 
 
+        # recup la data de l'api
         new_data["policy_duration_v1"] = client.policy_duration_v1
         new_data["inception_date_year_v1"] = client.inception_date_year_v1
         new_data["inception_date_month"] = client.inception_date_month
@@ -71,14 +76,30 @@ class ChurnC:
         new_data["total_claims_number"] = client.total_claims_number
         new_data["number_of_complaints"] = client.number_of_complaints
 
-        # transform into pad dataframe 
+        # transform into pd dataframe 
         new_data = pd.DataFrame(new_data, index=[0])
-
+        # exec pipeline de preproc
+        print(' --- start preproc ! ')
         new_data = self.pprocess_pipeline.fit_transform(new_data)
-        print(new_data)
+        print(' --- out of prproc ! ')
+        # assigner les data preproc aux model final (pour assurer le bon ordre)
+        for k,v in new_data.items():
+            new_data_model[k] = v
+        # ensuite convertir en pd dataframe
+        new_data_model_df = pd.DataFrame(new_data_model, index=[0])
+        print(' --- ready for predict ! ')
+        # print(new_data_model_df.T)
+        required_features = self.model.feature_names_in_
+        missings_features = set(required_features) - set(new_data_model_df.columns)
+        assert missings_features == set(), f"Missing features : {missings_features}"
         
-        # passer au pipeline
-        return None
-        # 
-
-
+        # passer au model
+        output = self.model.predict(new_data_model_df)
+        
+        self.output = output[0]
+        # print(f'OUTPUT : {self.output}')
+        return self
+        
+    def get_output(self):
+        target_dict = {'0': 'churn_no', '1': 'churn_yes'}
+        return target_dict.get(str(self.output))
