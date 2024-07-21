@@ -2,6 +2,7 @@ from dstoolbox.pipeline import DataFrameFeatureUnion
 from sklearn.pipeline import Pipeline
 
 from .encoders import *
+#from ml_pipeline.artifacts.encoders import * #(mode prod)
 
 
 class SKLPipeline:
@@ -12,35 +13,39 @@ class SKLPipeline:
     """
     def __init__(self):
         self.model = None
-        lot1: list[str] = [
-            'household_size',
-            'age_of_respondent'
+        target: str = 'churn' # package # premium
+
+        lot1: list[str] = [ 
+            "policy_duration_v1",
+            "premium",
+            "age_v1",
+            "total_claims_value_v1"
         ]
 
         lot2: list[str] = [
-            'country',
-            'relationship_with_head',
-            'marital_status',
-            'education_level',
-            'job_type'
+             "package"
         ]
 
-        lot2_bis = ['education_level']
 
         lot3: list[str] = [
-            'location_type',
-            'cellphone_access',
-            'gender_of_respondent'
+            "gender",
+            "discount_v1",
+            "has_additionnal_policies",
+
         ]
 
         lot4: list[str] = [
-            'year'
+            "inception_date_year_v1",
+            "inception_date_month",
+            "total_claims_number",
+            "number_of_complaints"
         ]
 
         self.feature_pipeline = DataFrameFeatureUnion(
             [
+                #('UnbalancedChecking', Balancer(target=[target]))
                 ('StandardEncoding', OwnStandardEncoder(columns=lot1)),
-                ('LabelEncoding', OwnLabelEncoder(columns=lot2_bis)),
+                ('LabelEncoding', OwnLabelEncoder(columns=lot2)),
                 ('OneHotEncoding', OwnOneHotEncoder(columns=lot3)),
                 ('NotEncoding', DataFeatureExtractor(columns=lot4))
             ]

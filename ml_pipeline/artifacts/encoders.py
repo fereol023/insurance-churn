@@ -1,4 +1,5 @@
 import pandas as pd
+#from ml_pipeline.artifacts import *
 from artifacts import *
 from joblib import load, dump
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -52,6 +53,7 @@ class OwnLabelEncoder(BaseEstimator, TransformerMixin):
     """
 
     def __init__(self, columns=None):
+        print('OLE')
         super().__init__()
         self.x: pd.DataFrame() = None
         self.columns: list[str] = columns
@@ -87,6 +89,7 @@ class OwnLabelEncoder(BaseEstimator, TransformerMixin):
 
 class OwnOneHotEncoder(BaseEstimator, TransformerMixin):
     def __init__(self, columns=None):
+        print('OHE')
         self.x: pd.DataFrame() = None
         self.columns: list[str] = columns
         if os.path.exists(str(MyPaths.estimatorFittedOneHotEncoder)):
@@ -121,17 +124,18 @@ class OwnOneHotEncoder(BaseEstimator, TransformerMixin):
 
 
 class DataFeatureExtractor(BaseEstimator, TransformerMixin):
+    """simple feature extractor"""
     def __init__(self, columns=None):
         super().__init__()
-        self.x: pd.DataFrame() = None
+        self.x: pd.DataFrame = None
         self.columns: list[str] = columns
 
     def fit(self, x, y=None):
-        if self.columns is not None:
-            self.x = x[self.columns]
-        else:
+        if not self.columns: 
             print(f'Warning : Columns to fit are not specified. Encoder will try to fit on every columns of dataset.')
+        
         try:
+            self.x = x[self.columns]
             return self
         except Exception as e:
             print(f'Exception occurs when fitting_DFE :: {e}')

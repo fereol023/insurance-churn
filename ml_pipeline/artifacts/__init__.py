@@ -1,6 +1,7 @@
 import time
 import os
 import pandas as pd
+import numpy as np
 from enum import Enum
 from scipy.stats import shapiro, pearsonr
 from itertools import product
@@ -23,7 +24,7 @@ def name_model_path(x_):
 
 
 class MyPaths:
-    estimatorFittedStandardEncoder: str = '../_models/artifacts/fitted_standardScaler.joblib'
-    estimatorFittedLabelEncoder: str = '../_models/artifacts/fitted_labelEncoder.joblib'
-    estimatorFittedOneHotEncoder: str = '../_models/artifacts/fitted_oneHotEncoder.joblib'
-    fittedModel: str = f'../_models/mlserver/{round(time.time())}.joblib'
+    estimatorFittedStandardEncoder: str = 'ml_pipeline/encoders_registry/fitted_standardScaler.joblib'
+    estimatorFittedLabelEncoder: str = 'ml_pipeline/encoders_registry/fitted_labelEncoder.joblib'
+    estimatorFittedOneHotEncoder: str = 'ml_pipeline/encoders_registry/fitted_oneHotEncoder.joblib'
+    fittedModel: str = f'ml_pipeline/models_registry/mlserver/{round(time.time())}.joblib'
