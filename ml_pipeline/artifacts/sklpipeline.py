@@ -1,8 +1,8 @@
 from dstoolbox.pipeline import DataFrameFeatureUnion
 from sklearn.pipeline import Pipeline
 
-from .encoders import *
-#from ml_pipeline.artifacts.encoders import * #(mode prod)
+#from .encoders import *
+from ml_pipeline.artifacts.encoders import * #(mode prod)
 
 
 class SKLPipeline:

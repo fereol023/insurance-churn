@@ -96,6 +96,7 @@ class ChurnC:
         # passer au model
         output = self.model.predict(new_data_model_df)
         
+        #self.model.predict_proba(new_data_model_df)[0][0]
         self.output = output[0]
         # print(f'OUTPUT : {self.output}')
         return self

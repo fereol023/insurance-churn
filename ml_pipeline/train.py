@@ -1,4 +1,4 @@
-import shap
+#import shap
 import warnings
 import matplotlib.pyplot as plt
 from joblib import load, dump
@@ -6,8 +6,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, RandomizedSearchCV, GridSearchCV
 
 from commons import variables
-from artifacts import *
-from artifacts.sklpipeline import SKLPipeline
+from ml_pipeline.artifacts import *
+from ml_pipeline.artifacts.sklpipeline import SKLPipeline
 warnings.filterwarnings('ignore')
 
 
@@ -59,3 +59,4 @@ def main(csv_data_path, version='v1_0'):
 if __name__ == '__main__':
     train_data_path = "data_processed/period0/train.csv"
     main(train_data_path)
+    print('Train completed !')
